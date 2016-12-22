@@ -2,7 +2,9 @@
 title: "Explorative"
 author: "Alex"
 date: "November 7, 2016"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 
@@ -40,7 +42,8 @@ if(!exists('HAtest')){HAtest <- read.csv(FNts)}
 ```
 
 
-## Plots
+## Arm Gyros Accel Magnet
+
 
 
 ```{r }
@@ -55,6 +58,8 @@ featurePlot(HAtrain[,c("accel_arm_x", "accel_arm_y", "accel_arm_z")], y = HAtrai
 featurePlot(HAtrain[,c("magnet_arm_x", "magnet_arm_y", "magnet_arm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
 ```
 
+## Dumbbell Gyros Accel Magnet
+
 ```{r }
 featurePlot(HAtrain[,c("gyros_dumbbell_x", "gyros_dumbbell_y", "gyros_dumbbell_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
 ```
@@ -66,6 +71,8 @@ featurePlot(HAtrain[,c("accel_dumbbell_x", "accel_dumbbell_y", "accel_dumbbell_z
 ```{r }
 featurePlot(HAtrain[,c("magnet_dumbbell_x", "magnet_dumbbell_y", "magnet_dumbbell_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
 ```
+
+## Belt Gyros Accel Magnet
 
 ```{r }
 featurePlot(HAtrain[,c("gyros_belt_x", "gyros_belt_y", "gyros_belt_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
@@ -79,6 +86,7 @@ featurePlot(HAtrain[,c("accel_belt_x", "accel_belt_y", "accel_belt_z")], y = HAt
 featurePlot(HAtrain[,c("magnet_belt_x", "magnet_belt_y", "magnet_belt_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
 ```
 
+## Forearm Gyros Accel Magnet
 
 ```{r }
 featurePlot(HAtrain[,c("gyros_forearm_x", "gyros_forearm_y", "gyros_forearm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))

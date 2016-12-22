@@ -1,0 +1,174 @@
+---
+title: "Explorative"
+author: "Alex"
+date: "November 7, 2016"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+
+library(utils)
+library(base)
+library(caret)
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+progDIR <- "C:/Users/Lihui/Dropbox/Coursera/JHU Data Science/Practical Machine Learning/W4 Regularized Regression/MLPeer/Human-Activity-Pred"
+setwd(progDIR)
+
+
+
+URLtr <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
+URLts <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'
+
+FNtr <- 'pml-training.csv'
+FNts <- 'pml-testing.csv'
+
+if(!file.exists(FNtr))
+{download.file(url = URLtr, destfile = FNtr)}
+
+if(!file.exists(FNts))
+{download.file(url = URLts, destfile = FNts)}
+
+if(!exists('HAtrain')){HAtrain <- read.csv(FNtr)}
+if(!exists('HAtest')){HAtest <- read.csv(FNts)}
+```
+
+### Dumbbell
+
+
+```{r }
+featurePlot(HAtrain[,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==1,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==1,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==2,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==2,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==3,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==3,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==4,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==4,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==5,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==5,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==6,c("roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell")], y = HAtrain[as.integer(HAtrain$user_name)==6,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+### Forearm
+
+
+
+
+```{r }
+featurePlot(HAtrain[,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==1,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==1,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==2,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==2,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==3,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==3,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==4,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==4,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==5,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==5,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==6,c("roll_forearm", "pitch_forearm", "yaw_forearm")], y = HAtrain[as.integer(HAtrain$user_name)==6,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+
+### Arm
+
+
+
+
+```{r }
+featurePlot(HAtrain[,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==1,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==1,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==2,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==2,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==3,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==3,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==4,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==4,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==5,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==5,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==6,c("roll_arm", "pitch_arm", "yaw_arm")], y = HAtrain[as.integer(HAtrain$user_name)==6,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+### Belt
+
+
+```{r }
+featurePlot(HAtrain[,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==1,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==1,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==2,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==2,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==3,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==3,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==4,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==4,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==5,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==5,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[as.integer(HAtrain$user_name)==6,c("roll_belt", "pitch_belt", "yaw_belt")], y = HAtrain[as.integer(HAtrain$user_name)==6,c("classe")],  plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```

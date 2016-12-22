@@ -1,0 +1,20 @@
+---
+title: "Towards a machine learning approach to exercise mistake detection"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Starting from the data collected from sensors attached to exercisers performing weight lifting, this report studies the correlation between the correctness of the exercisers' movements and the patterns of the sensor data. The goal is to explore the viability of detecting exercise mistakes based on sensor data, i.e. without a human coach.
+
+
+
+## Data
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
