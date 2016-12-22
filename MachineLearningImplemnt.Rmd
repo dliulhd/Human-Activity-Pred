@@ -1,0 +1,28 @@
+---
+title: "Machine Learning Implementation"
+author: "Alex"
+date: "December 22, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Choose variables
+
+The examin of the sensor data pattern shows that the variables covered are all more or less non-trivially correlated to the excercisers' movement quality. Therefore it is plausible to include all of them in the machine learning algorithm as a first attempt of prediction. 
+
+```{r variables}
+varPredictor = c("gyros_arm_x", "gyros_arm_y", "gyros_arm_z","accel_arm_x", "accel_arm_y", "accel_arm_z","magnet_arm_x", "magnet_arm_y", "magnet_arm_z")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
