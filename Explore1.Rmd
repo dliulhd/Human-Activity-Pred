@@ -1,0 +1,93 @@
+---
+title: "Explorative"
+author: "Alex"
+date: "November 7, 2016"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+
+library(utils)
+library(base)
+library(caret)
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+progDIR <- "C:/Users/Lihui/Dropbox/Coursera/JHU Data Science/Practical Machine Learning/W4 Regularized Regression/MLPeer/Human-Activity-Pred"
+setwd(progDIR)
+
+
+
+URLtr <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
+URLts <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'
+
+FNtr <- 'pml-training.csv'
+FNts <- 'pml-testing.csv'
+
+if(!file.exists(FNtr))
+{download.file(url = URLtr, destfile = FNtr)}
+
+if(!file.exists(FNts))
+{download.file(url = URLts, destfile = FNts)}
+
+if(!exists('HAtrain')){HAtrain <- read.csv(FNtr)}
+if(!exists('HAtest')){HAtest <- read.csv(FNts)}
+
+```
+
+
+## Plots
+
+
+```{r }
+featurePlot(HAtrain[,c("gyros_arm_x", "gyros_arm_y", "gyros_arm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("accel_arm_x", "accel_arm_y", "accel_arm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("magnet_arm_x", "magnet_arm_y", "magnet_arm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("gyros_dumbbell_x", "gyros_dumbbell_y", "gyros_dumbbell_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("accel_dumbbell_x", "accel_dumbbell_y", "accel_dumbbell_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("magnet_dumbbell_x", "magnet_dumbbell_y", "magnet_dumbbell_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("gyros_belt_x", "gyros_belt_y", "gyros_belt_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("accel_belt_x", "accel_belt_y", "accel_belt_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("magnet_belt_x", "magnet_belt_y", "magnet_belt_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+
+```{r }
+featurePlot(HAtrain[,c("gyros_forearm_x", "gyros_forearm_y", "gyros_forearm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("accel_forearm_x", "accel_forearm_y", "accel_forearm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
+
+```{r }
+featurePlot(HAtrain[,c("magnet_forearm_x", "magnet_forearm_y", "magnet_forearm_z")], y = HAtrain$classe, colour = HAtrain$classe, plot = "pairs",auto.key = list(columns = length(levels(HAtrain$classe))))
+```
