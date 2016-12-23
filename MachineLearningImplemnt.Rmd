@@ -130,10 +130,15 @@ show(confMtxLDAV)
 ## Random forest
  
 * Model fit
-```{r randomForest, echo = FALSE}
+```{r randomForest}
 library(randomForest)
-randForestFit <- randomForest(classe ~., data = trainDF,method="class")
+set.seed(1000)
+randForestFit <- randomForest(classe ~., data = trainDF,method="class", ntree = 1000)
+show(randForestFit$ntree)
 ```
+
+By default, the model aggregates the results from 500 prediction trees.
+
 
 * Prediction on test data set
 ```{r randomForest on test dataset}
@@ -178,12 +183,14 @@ show(confMtxBaggingV)
 * Fit the combined classifier model on test data set
 
 ```{r rf and bagging via rf}
-cNames <- c("RF","BAGGING","TREE","LDA")
-combTestDF <- data.frame(predRandForest,predBagging, predTree, predLDA, testDF$classe)
+cNames <- c("RF","BAGGING","TREE",
+            "LDA")
+combTestDF <- data.frame(predRandForest,predBagging,  predTree, 
+                         predLDA, testDF$classe)
 colnames(combTestDF) <- c(cNames,"classe")
 combRfFit <- randomForest(classe~., data = combTestDF, method = "class")
 combRfPred <- predict(combRfFit, combTestDF)
-confMtxCombRf <- confusionMatrix(combRfPred,testDF$classe)
+confMtxCombRf <- confusionMatrix(testDF$classe,combRfPred)
 show(confMtxCombRf)
 ```
 
@@ -193,7 +200,7 @@ show(confMtxCombRf)
 combValDF <- data.frame(predRandForestV,predBaggingV, predTreeV, predLDAV)
 colnames(combValDF) <- cNames
 combRfPredV <- predict(combRfFit, newdata = combValDF, type = "class")
-confMtxCombRfV <- confusionMatrix(combRfPredV,validationDF$classe)
+confMtxCombRfV <- confusionMatrix(validationDF$classe,combRfPredV)
 show(confMtxCombRfV)
 ```
 
@@ -201,7 +208,7 @@ show(confMtxCombRfV)
 
 
 
-## Appendix: other machine learning algorithms
+## Appendix 1: other machine learning algorithms
 
 ### Regression Model
 
@@ -237,7 +244,115 @@ confMtxNB <- confusionMatrix(testDF$classe, predNB)
 show(confMtxNB)
 ```
 
-### Combining classifiers via decision tree
+
+## Appendix 2: Tree number in the radom forest model
+
+This appendix shows the effect of tree numbers in the random forest approach on the accuracy of prediction result. The following subsections show the predictions with ntree=1, 10, 100 and 1000 respectively, starting from the same random seed. The results show an improving prediction performance as ntree increases. It turns out that the prediction accuracy and kappa value are already approaching 0.99 with ntree = 100. Therefore the default value ntree = 500 used in the report is a plausible setting in balancing speed and accuracy.
+
+### ntree = 1
+
+* Model fit
+```{r randomForest ntree 1}
+library(randomForest)
+set.seed(1000)
+randForestFit1 <- randomForest(classe ~., data = trainDF,method="class", ntree = 1)
+show(randForestFit1$ntree)
+```
+
+
+* Prediction on test data set
+```{r randomForest ntree 1 on test dataset}
+predRandForest1 <- predict(randForestFit1, newdata = testDF)
+confMtxRF1 <- confusionMatrix(testDF$classe, predRandForest1)
+show(confMtxRF1)
+```
+
+* Prediction on validation data set
+```{r randomForest ntree 1 on validation dataset}
+predRandForestV1 <- predict(randForestFit1, newdata = validationDF)
+confMtxRFV1 <- confusionMatrix(validationDF$classe, predRandForestV1)
+show(confMtxRFV1)
+```
+
+### ntree = 10
+
+* Model fit
+```{r randomForest ntree 10}
+library(randomForest)
+set.seed(1000)
+randForestFit10 <- randomForest(classe ~., data = trainDF,method="class", ntree = 10)
+show(randForestFit10$ntree)
+```
+
+
+* Prediction on test data set
+```{r randomForest ntree 10 on test dataset}
+predRandForest10 <- predict(randForestFit10, newdata = testDF)
+confMtxRF10 <- confusionMatrix(testDF$classe, predRandForest10)
+show(confMtxRF10)
+```
+
+* Prediction on validation data set
+```{r randomForest ntree 10 on validation dataset}
+predRandForestV10 <- predict(randForestFit10, newdata = validationDF)
+confMtxRFV10 <- confusionMatrix(validationDF$classe, predRandForestV10)
+show(confMtxRFV10)
+```
+
+
+
+### ntree = 100
+
+* Model fit
+```{r randomForest ntree 100}
+library(randomForest)
+set.seed(1000)
+randForestFit100 <- randomForest(classe ~., data = trainDF,method="class", ntree = 100)
+show(randForestFit100$ntree)
+```
+
+
+* Prediction on test data set
+```{r randomForest ntree 100 on test dataset}
+predRandForest100 <- predict(randForestFit100, newdata = testDF)
+confMtxRF100 <- confusionMatrix(testDF$classe, predRandForest100)
+show(confMtxRF100)
+```
+
+* Prediction on validation data set
+```{r randomForest ntree 100 on validation dataset}
+predRandForestV100 <- predict(randForestFit100, newdata = validationDF)
+confMtxRFV100 <- confusionMatrix(validationDF$classe, predRandForestV100)
+show(confMtxRFV100)
+```
+
+### ntree = 1000
+
+* Model fit
+```{r randomForest ntree 1000}
+library(randomForest)
+set.seed(1000)
+randForestFit1000 <- randomForest(classe ~., data = trainDF,method="class", ntree = 1000)
+show(randForestFit1000$ntree)
+```
+
+
+* Prediction on test data set
+```{r randomForest ntree 1000 on test dataset}
+predRandForest1000 <- predict(randForestFit1000, newdata = testDF)
+confMtxRF1000 <- confusionMatrix(testDF$classe, predRandForest1000)
+show(confMtxRF1000)
+```
+
+* Prediction on validation data set
+```{r randomForest ntree 1000 on validation dataset}
+predRandForestV1000 <- predict(randForestFit1000, newdata = validationDF)
+confMtxRFV1000 <- confusionMatrix(validationDF$classe, predRandForestV1000)
+show(confMtxRFV1000)
+```
+
+
+## Appendix 3: Combining classifiers via decision tree
 
 ```{r rf and bagging etc via tree}
 library(rpart)
