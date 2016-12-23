@@ -13,16 +13,243 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The examin of the sensor data pattern shows that the variables covered are all more or less non-trivially correlated to the excercisers' movement quality. Therefore it is plausible to include all of them in the machine learning algorithm as a first attempt of prediction. 
 
+```{r prepare, include=FALSE}
+
+library(utils)
+library(base)
+library(caret)
+library(ggplot2)
+library(e1071)
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+progDIR <- "C:/Users/Lihui/Dropbox/Coursera/JHU Data Science/Practical Machine Learning/W4 Regularized Regression/MLPeer/Human-Activity-Pred"
+
+setwd(progDIR)
+
+
+
+URLtr <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
+URLts <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'
+
+FNtr <- 'pml-training.csv'
+FNts <- 'pml-testing.csv'
+
+if(!file.exists(FNtr))
+{download.file(url = URLtr, destfile = FNtr)}
+
+if(!file.exists(FNts))
+{download.file(url = URLts, destfile = FNts)}
+
+if(!exists('HAtrain')){HAtrain <- read.csv(FNtr)}
+if(!exists('HAtest')){HAtest <- read.csv(FNts)}
+
+```
+
 ```{r variables}
-varPredictor = c("gyros_arm_x", "gyros_arm_y", "gyros_arm_z","accel_arm_x", "accel_arm_y", "accel_arm_z","magnet_arm_x", "magnet_arm_y", "magnet_arm_z")
+varPredictor = c(    "roll_dumbbell", "pitch_dumbbell", "yaw_dumbbell",
+    "roll_arm", "pitch_arm", "yaw_arm",
+    "roll_forearm", "pitch_forearm", "yaw_forearm",
+    "roll_belt", "pitch_belt", "yaw_belt",
+  "gyros_dumbbell_x", "gyros_dumbbell_y", "gyros_dumbbell_z","accel_dumbbell_x", "accel_dumbbell_y", "accel_dumbbell_z","magnet_dumbbell_x", "magnet_dumbbell_y", "magnet_dumbbell_z",
+    "gyros_belt_x", "gyros_belt_y", "gyros_belt_z","accel_belt_x", "accel_belt_y", "accel_belt_z","magnet_belt_x", "magnet_belt_y", "magnet_belt_z",
+    "gyros_forearm_x", "gyros_forearm_y", "gyros_forearm_z","accel_forearm_x", "accel_forearm_y", "accel_forearm_z","magnet_forearm_x", "magnet_forearm_y", "magnet_forearm_z",
+  "gyros_arm_x", "gyros_arm_y", "gyros_arm_z","accel_arm_x", "accel_arm_y", "accel_arm_z","magnet_arm_x", "magnet_arm_y", "magnet_arm_z",
+  "classe")
+
+set.seed(2016)
+
+idxNonValidation <- createDataPartition(y= HAtrain$classe, p = 0.7, list = FALSE)
+nonValidationDF <- HAtrain[idxNonValidation,varPredictor]
+validationDF <- HAtrain[-idxNonValidation,varPredictor]
+idxTrain <- createDataPartition(y= nonValidationDF$classe, p = 0.7, list = FALSE)
+trainDF <- nonValidationDF[idxTrain,varPredictor]
+testDF <- nonValidationDF[-idxTrain,varPredictor]
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Prediction tree
+
+* Model fit
+
+```{r tree fit and plot}
+library(rpart)
+library(rpart.plot)
+library(RColorBrewer)
+library(rattle)
+treeFit <- rpart(classe ~., data = trainDF)
+fancyRpartPlot(treeFit, main = "Prediction Tree Model")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+* Prediction on test data set
+
+```{r tree on testing data}
+predTree <- predict(treeFit, newdata = testDF, type = "class")
+confMtxTree <- confusionMatrix(testDF$classe, predTree)
+show(confMtxTree)
+```
+
+* Prediction on validation data set
+
+```{r tree on validation data}
+predTreeV <- predict(treeFit, newdata = validationDF, type = "class")
+confMtxTreeV <- confusionMatrix(validationDF$classe, predTreeV)
+show(confMtxTreeV)
+```
+
+## Linear discriminant analysis
+
+* Model fit
+
+```{r lda}
+library(MASS)
+ldaFit <- lda(classe ~., data = trainDF)
+```
+
+* Prediction on test data set
+
+```{r lda on test data set}
+predLDA <- predict(ldaFit, newdata = testDF)$class
+confMtxLDA <- confusionMatrix(testDF$classe, predLDA)
+show(confMtxLDA)
+```
+
+* Prediction on validation data set
+
+```{r lda on validation data set}
+predLDAV <- predict(ldaFit, newdata = validationDF)$class
+confMtxLDAV <- confusionMatrix(validationDF$classe, predLDAV)
+show(confMtxLDAV)
+```
+
+
+## Random forest
+ 
+* Model fit
+```{r randomForest, echo = FALSE}
+library(randomForest)
+randForestFit <- randomForest(classe ~., data = trainDF,method="class")
+```
+
+* Prediction on test data set
+```{r randomForest on test dataset}
+predRandForest <- predict(randForestFit, newdata = testDF)
+confMtxRF <- confusionMatrix(testDF$classe, predRandForest)
+show(confMtxRF)
+```
+
+* Prediction on validation data set
+```{r randomForest on validation dataset}
+predRandForestV <- predict(randForestFit, newdata = validationDF)
+confMtxRFV <- confusionMatrix(validationDF$classe, predRandForestV)
+show(confMtxRFV)
+```
+
+## Bagging
+
+```{r bagging, echo = FALSE}
+library(ipred)
+baggingFit <- bagging(classe ~., data = trainDF)
+```
+
+* Prediction on testing data set
+```{r bagging prediction on testing data set}
+predBagging <- predict(baggingFit, newdata = testDF)
+confMtxBagging <- confusionMatrix(testDF$classe, predBagging)
+show(confMtxBagging)
+```
+
+
+* Prediction on validation data set
+
+```{r bagging on validation data set}
+predBaggingV <- predict(baggingFit, newdata = validationDF)
+confMtxBaggingV <- confusionMatrix(validationDF$classe, predBaggingV)
+show(confMtxBaggingV)
+```
+
+
+## Combining classifiers via random forest
+
+* Fit the combined classifier model on test data set
+
+```{r rf and bagging via rf}
+cNames <- c("RF","BAGGING","TREE","LDA")
+combTestDF <- data.frame(predRandForest,predBagging, predTree, predLDA, testDF$classe)
+colnames(combTestDF) <- c(cNames,"classe")
+combRfFit <- randomForest(classe~., data = combTestDF, method = "class")
+combRfPred <- predict(combRfFit, combTestDF)
+confMtxCombRf <- confusionMatrix(combRfPred,testDF$classe)
+show(confMtxCombRf)
+```
+
+* Make prediction on validation data set
+
+```{r rf and bagging via rf validation}
+combValDF <- data.frame(predRandForestV,predBaggingV, predTreeV, predLDAV)
+colnames(combValDF) <- cNames
+combRfPredV <- predict(combRfFit, newdata = combValDF, type = "class")
+confMtxCombRfV <- confusionMatrix(combRfPredV,validationDF$classe)
+show(confMtxCombRfV)
+```
+
+
+
+
+
+## Appendix: other machine learning algorithms
+
+### Regression Model
+
+Regression model is not applicable because the dependent variable "classe" is a 5-level factor variable, while regression model requires the dependent variable be numerical or binary.
+
+
+### Boosting
+```{r boosting}
+numToLet <- function(x){
+  if(x == 1) return("A")
+  if(x == 2) return("B")
+  if(x == 3) return("C")
+  if(x == 4) return("D")
+  else return("E")
+}
+
+library(gbm)
+library(survival)
+boostingFit <- gbm(classe ~.,  data = trainDF, distribution="multinomial")
+predBoosting <- data.frame(predict(boostingFit, newdata = testDF, n.trees = boostingFit$n.trees))
+predBoosting <- apply(predBoosting,1,which.max)
+predBoosting <- factor(sapply(predBoosting,numToLet))
+confMtxBoosting <- confusionMatrix(testDF$classe, predBoosting)
+show(confMtxBoosting)
+```
+
+### Naive Bayes
+
+```{r naive bayes}
+nbFit <- naiveBayes(classe ~., data = trainDF)
+predNB <- predict(nbFit, newdata = testDF)
+confMtxNB <- confusionMatrix(testDF$classe, predNB)
+show(confMtxNB)
+```
+
+### Combining classifiers via decision tree
+
+```{r rf and bagging etc via tree}
+library(rpart)
+combTreeFit <- rpart(classe~., data = combTestDF, method = "class")
+combTreePred <- predict(combTreeFit, combTestDF,type = "class")
+confMtxCombTree <- confusionMatrix(testDF$classe,combTreePred)
+show(confMtxCombTree)
+```
+
+
+```{r rf and bagging etc via tree validation}
+combTreePredV <- predict(combTreeFit, newdata = combValDF, type = "class")
+confMtxCombTreeV <- confusionMatrix(validationDF$classe, combTreePredV)
+show(confMtxCombTreeV)
+```
